@@ -38,7 +38,7 @@
 - Target 사진은 우리가 sample에서 찾고자 하는 부분.
 - sample 내에 target이 위치한 부분을 사각형으로 마킹하여 출력.
 - 해당 코드를 작성한다면, github에 올리기 위한 방법(너가 스스로 할 수 있는지 포함)
-- 변수 명을 m_자료형이름 과 같이 변경한다. 예시) m_samplePath -> m_strSamplePath
+- 변수 명을 m_자료형이름 과 같이 변경한다. 예시) m_samplePath -> m_strSamplePath (내가 주석으로 달자)
 
 ## 7. 현재 개발 환경
 
