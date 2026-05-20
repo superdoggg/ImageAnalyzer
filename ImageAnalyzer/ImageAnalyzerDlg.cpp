@@ -31,7 +31,6 @@ BOOL CImageAnalyzerDlg::OnInitDialog()
 {
     CDialogEx::OnInitDialog();
 
-    LoadDefaultImages();
     UpdateStatus();
 
     return TRUE;
@@ -45,11 +44,11 @@ void CImageAnalyzerDlg::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct
     const CRect rect = lpDrawItemStruct->rcItem;
     if (nIDCtl == IDC_PICTURE_SAMPLE)
     {
-        DrawImageBox(dc, rect, m_sampleImage, _T("Sample 이미지 없음"));
+        DrawImageBox(dc, rect, m_imgSample, _T("Sample 이미지 없음"));
     }
     else if (nIDCtl == IDC_PICTURE_TARGET)
     {
-        DrawImageBox(dc, rect, m_targetImage, _T("Target 이미지 없음"));
+        DrawImageBox(dc, rect, m_imgTarget, _T("Target 이미지 없음"));
     }
     else
     {
@@ -69,7 +68,7 @@ void CImageAnalyzerDlg::OnBnClickedLoadSample()
         _T("이미지 파일 (*.png;*.jpg;*.jpeg;*.bmp)|*.png;*.jpg;*.jpeg;*.bmp|모든 파일 (*.*)|*.*||"),
         this);
 
-    if (dialog.DoModal() == IDOK && LoadImageFile(dialog.GetPathName(), m_sampleImage, m_samplePath))
+    if (dialog.DoModal() == IDOK && LoadImageFile(dialog.GetPathName(), m_imgSample, m_strSamplePath))
     {
         RefreshImageBox(IDC_PICTURE_SAMPLE);
         UpdateStatus();
@@ -86,7 +85,7 @@ void CImageAnalyzerDlg::OnBnClickedLoadTarget()
         _T("이미지 파일 (*.png;*.jpg;*.jpeg;*.bmp)|*.png;*.jpg;*.jpeg;*.bmp|모든 파일 (*.*)|*.*||"),
         this);
 
-    if (dialog.DoModal() == IDOK && LoadImageFile(dialog.GetPathName(), m_targetImage, m_targetPath))
+    if (dialog.DoModal() == IDOK && LoadImageFile(dialog.GetPathName(), m_imgTarget, m_strTargetPath))
     {
         RefreshImageBox(IDC_PICTURE_TARGET);
         UpdateStatus();
@@ -95,37 +94,22 @@ void CImageAnalyzerDlg::OnBnClickedLoadTarget()
 
 void CImageAnalyzerDlg::OnBnClickedClear()
 {
-    if (!m_sampleImage.IsNull())
+    if (!m_imgSample.IsNull())
     {
-        m_sampleImage.Destroy();
+        m_imgSample.Destroy();
     }
 
-    if (!m_targetImage.IsNull())
+    if (!m_imgTarget.IsNull())
     {
-        m_targetImage.Destroy();
+        m_imgTarget.Destroy();
     }
 
-    m_samplePath.Empty();
-    m_targetPath.Empty();
+    m_strSamplePath.Empty();
+    m_strTargetPath.Empty();
 
     RefreshImageBox(IDC_PICTURE_SAMPLE);
     RefreshImageBox(IDC_PICTURE_TARGET);
     UpdateStatus();
-}
-
-void CImageAnalyzerDlg::LoadDefaultImages()
-{
-    CString samplePath;
-    if (FindFileNearby(_T("sample.png"), samplePath))
-    {
-        LoadImageFile(samplePath, m_sampleImage, m_samplePath);
-    }
-
-    CString targetPath;
-    if (FindFileNearby(_T("target.png"), targetPath))
-    {
-        LoadImageFile(targetPath, m_targetImage, m_targetPath);
-    }
 }
 
 bool CImageAnalyzerDlg::LoadImageFile(const CString& path, CImage& image, CString& storedPath)
@@ -271,7 +255,7 @@ void CImageAnalyzerDlg::UpdateStatus()
 {
     CString status;
 
-    if (m_samplePath.IsEmpty() && m_targetPath.IsEmpty())
+    if (m_strSamplePath.IsEmpty() && m_strTargetPath.IsEmpty())
     {
         status = _T("sample.png와 target.png를 자동으로 찾지 못했습니다. 버튼으로 이미지를 선택하세요.");
     }
@@ -279,8 +263,8 @@ void CImageAnalyzerDlg::UpdateStatus()
     {
         status.Format(
             _T("Sample: %s\r\nTarget: %s"),
-            m_samplePath.IsEmpty() ? _T("선택되지 않음") : m_samplePath.GetString(),
-            m_targetPath.IsEmpty() ? _T("선택되지 않음") : m_targetPath.GetString());
+            m_strSamplePath.IsEmpty() ? _T("선택되지 않음") : m_strSamplePath.GetString(),
+            m_strTargetPath.IsEmpty() ? _T("선택되지 않음") : m_strTargetPath.GetString());
     }
 
     SetDlgItemText(IDC_STATIC_STATUS, status);
